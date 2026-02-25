@@ -37,14 +37,23 @@
     .chat-header {
       display: none !important;
     }
-    .chat-input {
+    /* FIXED: use wildcard selectors to catch n8n's generated class names */
+    [class*="chat-input"],
+    [class*="chat-inputs"],
+    [class*="input-wrapper"],
+    [class*="chat-footer"] {
       width: 100% !important;
+      max-width: 100% !important;
       box-sizing: border-box !important;
+      padding-left: 0 !important;
+      padding-right: 0 !important;
     }
-    .chat-input-wrapper {
+    #n8n-chat textarea,
+    #n8n-chat input[type="text"] {
       width: 100% !important;
+      max-width: 100% !important;
       box-sizing: border-box !important;
-      padding: 0 !important;
+      flex: 1 1 auto !important;
     }
     .chat-message-markdown p {
       margin: 0 0 4px 0;
@@ -99,6 +108,25 @@
         }
       }
     });
+
+    // JS fallback: force input width after widget renders asynchronously
+    function fixInputWidth() {
+      document.querySelectorAll(
+        '#n8n-chat textarea, #n8n-chat input[type="text"], ' +
+        '[class*="chat-input"], [class*="chat-inputs"], [class*="chat-footer"]'
+      ).forEach(el => {
+        el.style.setProperty('width', '100%', 'important');
+        el.style.setProperty('max-width', '100%', 'important');
+        el.style.setProperty('box-sizing', 'border-box', 'important');
+      });
+    }
+
+    setTimeout(fixInputWidth, 500);
+    setTimeout(fixInputWidth, 1500);
+    new MutationObserver(fixInputWidth).observe(
+      document.getElementById('n8n-chat'),
+      { childList: true, subtree: true }
+    );
   </script>
 
 </body>
