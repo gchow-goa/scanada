@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Scanada — Jurisdictional Scan Copilot</title>
+  <link href="https://cdn.jsdelivr.net/npm/@n8n/chat/dist/style.css" rel="stylesheet" />
+  <style>
+    body {
+      margin: 0;
+      background: #f4f6f9;
+      font-family: 'Segoe UI', Arial, sans-serif;
+    }
+    .scanada-header {
+      background: #003366;
+      color: #ffffff;
+      padding: 16px 32px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+    .scanada-header h1 {
+      margin: 0;
+      font-size: 1.4rem;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+    }
+    .scanada-header p {
+      margin: 3px 0 0;
+      font-size: 0.82rem;
+      opacity: 0.8;
+    }
+    #n8n-chat {
+      height: calc(100vh - 72px);
+    }
+    :root {
+      --chat--color-primary: #003366;
+      --chat--color-primary-shade-50: #002244;
+      --chat--color-secondary: #0055a5;
+      --chat--color-background: #ffffff;
+      --chat--color-font: #1a1a2e;
+      --chat--message--bot--background: #eaf1fb;
+      --chat--message--user--background: #003366;
+      --chat--message--user--color: #ffffff;
+      --chat--message--font-size: 0.95rem;
+      --chat--input--background: #f9fafb;
+      --chat--header--background: #003366;
+      --chat--header--color: #ffffff;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="scanada-header">
+    <div>
+      <h1>🍁 Scanada</h1>
+      <p>Official-Source Jurisdictional Scan Copilot — Government of Alberta</p>
+    </div>
+  </div>
+
+  <div id="n8n-chat"></div>
+
+  <script type="module">
+    import { createChat } from 'https://cdn.jsdelivr.net/npm/@n8n/chat/dist/chat.bundle.es.js';
+
+    createChat({
+      webhookUrl: 'https://govab.app.n8n.cloud/webhook/1bbc3c5c-cb72-4b22-b04b-afe0b075b279/chat',
+      target: '#n8n-chat',
+      mode: 'fullscreen',
+      showWelcomeScreen: true,
+      initialMessages: [
+        "Hi — I'm Scanada, your jurisdictional scan copilot. Paste your research question below to get started.\n\n✅ Required: Research question\n🔲 Optional: Jurisdictions (default: all 14 — provinces, territories + federal)\n🔲 Optional: Time range (default: most recently available)\n🔲 Optional: Keywords, exclusions\n\nExample: \"Scan all PT from 2021-04 to 2026-02: What progress has each province and territory made in creating new regulated childcare spaces, with particular attention to K–12 school settings and CWELCC funding? Keywords: CWELCC, space creation, capital funding. Exclude: home child care, unregulated care.\"\n\nAll scans produce a full structured report from official government sources only."
+      ],
+      i18n: {
+        en: {
+          title: 'Scanada',
+          subtitle: 'Official-Source Jurisdictional Scans',
+          inputPlaceholder: 'Describe your research question…',
+          getStarted: 'Start Scan',
+        }
+      }
+    });
+  </script>
+
+</body>
+</html>
