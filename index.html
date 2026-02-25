@@ -37,30 +37,6 @@
     .chat-header {
       display: none !important;
     }
-    /* Make the input row a flex container */
-    [class*="chat-input"],
-    [class*="chat-inputs"],
-    [class*="input-wrapper"],
-    [class*="chat-footer"] {
-      display: flex !important;
-      flex-direction: row !important;
-      align-items: center !important;
-      width: 100% !important;
-      max-width: 100% !important;
-      box-sizing: border-box !important;
-    }
-    /* Textarea fills all remaining space */
-    #n8n-chat textarea,
-    #n8n-chat input[type="text"] {
-      flex: 1 1 auto !important;
-      min-width: 0 !important;
-      box-sizing: border-box !important;
-    }
-    /* Send button stays small and fixed */
-    #n8n-chat button[type="submit"] {
-      flex: 0 0 auto !important;
-      width: auto !important;
-    }
     .chat-message-markdown p {
       margin: 0 0 4px 0;
     }
@@ -115,33 +91,43 @@
       }
     });
 
-    function fixInputWidth() {
-      // Textarea grows to fill space
-      document.querySelectorAll('#n8n-chat textarea, #n8n-chat input[type="text"]').forEach(el => {
-        el.style.setProperty('flex', '1 1 auto', 'important');
-        el.style.setProperty('min-width', '0', 'important');
-        el.style.setProperty('box-sizing', 'border-box', 'important');
-      });
-      // Submit button stays its natural size
-      document.querySelectorAll('#n8n-chat button[type="submit"]').forEach(el => {
-        el.style.setProperty('flex', '0 0 auto', 'important');
-        el.style.setProperty('width', 'auto', 'important');
-      });
-      // Input row containers are flex rows
-      document.querySelectorAll('[class*="chat-input"], [class*="chat-inputs"], [class*="input-wrapper"], [class*="chat-footer"]').forEach(el => {
-        el.style.setProperty('display', 'flex', 'important');
-        el.style.setProperty('flex-direction', 'row', 'important');
-        el.style.setProperty('width', '100%', 'important');
-        el.style.setProperty('box-sizing', 'border-box', 'important');
-      });
+    function fixLayout() {
+      // Find the textarea — this is the most reliable anchor element
+      const textarea = document.querySelector('#n8n-chat textarea');
+      if (!textarea) return;
+
+      // Fix the textarea itself — grow to fill all available space
+      textarea.style.cssText += '; flex: 1 1 auto !important; width: 100% !important; min-width: 0 !important; box-sizing: border-box !important;';
+
+      // Walk up to find the flex row container (immediate parent of textarea)
+      const inputRow = textarea.parentElement;
+      if (inputRow) {
+        inputRow.style.cssText += '; display: flex !important; flex-direction: row !important; align-items: center !important; width: 100% !important; box-sizing: border-box !important;';
+
+        // Fix every sibling button — shrink to natural size, never grow
+        inputRow.querySelectorAll('button').forEach(btn => {
+          btn.style.cssText += '; flex: 0 0 auto !important; width: auto !important; min-width: unset !important; max-width: unset !important;';
+        });
+
+        // Also fix any intermediate wrappers between inputRow and the chat root
+        let el = inputRow.parentElement;
+        while (el && el !== document.getElementById('n8n-chat')) {
+          el.style.cssText += '; width: 100% !important; max-width: 100% !important; box-sizing: border-box !important;';
+          el = el.parentElement;
+        }
+      }
     }
 
-    setTimeout(fixInputWidth, 500);
-    setTimeout(fixInputWidth, 1500);
-    new MutationObserver(fixInputWidth).observe(
-      document.getElementById('n8n-chat'),
-      { childList: true, subtree: true }
-    );
+    // Run after widget renders, keep watching for re-renders
+    setTimeout(fixLayout, 300);
+    setTimeout(fixLayout, 800);
+    setTimeout(fixLayout, 2000);
+
+    new MutationObserver(() => {
+      if (document.querySelector('#n8n-chat textarea')) {
+        fixLayout();
+      }
+    }).observe(document.getElementById('n8n-chat'), { childList: true, subtree: true });
   </script>
 
 </body>
