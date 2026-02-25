@@ -37,35 +37,29 @@
     .chat-header {
       display: none !important;
     }
-    /* Input row container */
+    /* Make the input row a flex container */
     [class*="chat-input"],
     [class*="chat-inputs"],
     [class*="input-wrapper"],
     [class*="chat-footer"] {
-      width: 100% !important;
-      max-width: 100% !important;
-      box-sizing: border-box !important;
       display: flex !important;
       flex-direction: row !important;
       align-items: center !important;
+      width: 100% !important;
+      max-width: 100% !important;
+      box-sizing: border-box !important;
     }
-    /* Text input grows to fill all available space */
+    /* Textarea fills all remaining space */
     #n8n-chat textarea,
     #n8n-chat input[type="text"] {
       flex: 1 1 auto !important;
-      width: 0 !important;
       min-width: 0 !important;
-      max-width: none !important;
       box-sizing: border-box !important;
     }
-    /* Submit button stays a fixed small width */
-    #n8n-chat button[type="submit"],
-    #n8n-chat button[class*="send"],
-    #n8n-chat button[class*="submit"] {
-      flex: 0 0 48px !important;
-      width: 48px !important;
-      min-width: 48px !important;
-      max-width: 48px !important;
+    /* Send button stays small and fixed */
+    #n8n-chat button[type="submit"] {
+      flex: 0 0 auto !important;
+      width: auto !important;
     }
     .chat-message-markdown p {
       margin: 0 0 4px 0;
@@ -122,31 +116,22 @@
     });
 
     function fixInputWidth() {
-      // Input grows, button stays fixed
-      document.querySelectorAll(
-        '#n8n-chat textarea, #n8n-chat input[type="text"]'
-      ).forEach(el => {
+      // Textarea grows to fill space
+      document.querySelectorAll('#n8n-chat textarea, #n8n-chat input[type="text"]').forEach(el => {
         el.style.setProperty('flex', '1 1 auto', 'important');
-        el.style.setProperty('width', '0', 'important');
         el.style.setProperty('min-width', '0', 'important');
-        el.style.setProperty('max-width', 'none', 'important');
         el.style.setProperty('box-sizing', 'border-box', 'important');
       });
-      document.querySelectorAll(
-        '#n8n-chat button[type="submit"], #n8n-chat button'
-      ).forEach(el => {
-        el.style.setProperty('flex', '0 0 48px', 'important');
-        el.style.setProperty('width', '48px', 'important');
-        el.style.setProperty('min-width', '48px', 'important');
-        el.style.setProperty('max-width', '48px', 'important');
+      // Submit button stays its natural size
+      document.querySelectorAll('#n8n-chat button[type="submit"]').forEach(el => {
+        el.style.setProperty('flex', '0 0 auto', 'important');
+        el.style.setProperty('width', 'auto', 'important');
       });
-      document.querySelectorAll(
-        '[class*="chat-input"], [class*="chat-inputs"], [class*="input-wrapper"], [class*="chat-footer"]'
-      ).forEach(el => {
+      // Input row containers are flex rows
+      document.querySelectorAll('[class*="chat-input"], [class*="chat-inputs"], [class*="input-wrapper"], [class*="chat-footer"]').forEach(el => {
         el.style.setProperty('display', 'flex', 'important');
         el.style.setProperty('flex-direction', 'row', 'important');
         el.style.setProperty('width', '100%', 'important');
-        el.style.setProperty('max-width', '100%', 'important');
         el.style.setProperty('box-sizing', 'border-box', 'important');
       });
     }
