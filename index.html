@@ -32,11 +32,20 @@
     }
     #n8n-chat {
       height: calc(100vh - 72px);
+      width: 100%;
     }
     .chat-header {
       display: none !important;
     }
-    /* Force initial message bubbles to preserve line breaks */
+    .chat-input {
+      width: 100% !important;
+      box-sizing: border-box !important;
+    }
+    .chat-input-wrapper {
+      width: 100% !important;
+      box-sizing: border-box !important;
+      padding: 0 !important;
+    }
     .chat-message-markdown p {
       margin: 0 0 4px 0;
     }
