@@ -33,9 +33,12 @@
     #n8n-chat {
       height: calc(100vh - 72px);
     }
-    /* Hide the n8n widget's built-in header to avoid duplication */
     .chat-header {
       display: none !important;
+    }
+    /* Force initial message bubbles to preserve line breaks */
+    .chat-message-markdown p {
+      margin: 0 0 4px 0;
     }
     :root {
       --chat--color-primary: #003366;
@@ -73,16 +76,10 @@
       mode: 'fullscreen',
       showWelcomeScreen: true,
       initialMessages: [
-        `Hi — I'm Scanada, your jurisdictional scan copilot.  Paste your research question below to get started.
-
-✅ Required: Research question
-🔲 Optional: Jurisdictions (default: all 14 — provinces, territories + federal)
-🔲 Optional: Time range (default: most recently available)
-🔲 Optional: Keywords, exclusions
-
-Example: "Scan all PT from 2021-04 to 2026-02: What progress has each province and territory made in creating new regulated childcare spaces, with particular attention to K–12 school settings and CWELCC funding? Keywords: CWELCC, space creation, capital funding. Exclude: home child care, unregulated care."
-
-All scans produce a full structured report from official government sources only.`
+        "Hi — I'm Scanada, your jurisdictional scan copilot.",
+        "Paste your research question below to get started.\n✅ Required: Research question\n🔲 Optional: Jurisdictions (default: all 14 — provinces, territories + federal)\n🔲 Optional: Time range (default: most recently available)\n🔲 Optional: Keywords, exclusions",
+        "Example:\n\"Scan all PT from 2021-04 to 2026-02: What progress has each province and territory made in creating new regulated childcare spaces, with particular attention to K–12 school settings and CWELCC funding? Keywords: CWELCC, space creation, capital funding. Exclude: home child care, unregulated care.\"",
+        "All scans produce a full structured report from official government sources only."
       ],
       i18n: {
         en: {
