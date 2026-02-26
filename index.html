@@ -106,7 +106,7 @@
 
         const btn = document.createElement('button');
         btn.className = 'scanada-copy-btn';
-        btn.textContent = '📋 Copy Report';
+        btn.textContent = 'Copy Report';
         btn.style.cssText = [
           'margin-top: 8px',
           'padding: 6px 14px',
@@ -147,14 +147,14 @@
             btn.style.color = '#ffffff';
             btn.style.borderColor = '#006600';
             setTimeout(() => {
-              btn.textContent = '📋 Copy Report';
+              btn.textContent = 'Copy Report';
               btn.style.background = '#ffffff';
               btn.style.color = '#003366';
               btn.style.borderColor = '#003366';
             }, 2500);
           }).catch(() => {
             btn.textContent = '⚠️ Copy failed — select text manually';
-            setTimeout(() => { btn.textContent = '📋 Copy Report'; }, 3000);
+            setTimeout(() => { btn.textContent = 'Copy Report'; }, 3000);
           });
         });
 
