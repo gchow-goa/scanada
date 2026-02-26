@@ -90,20 +90,24 @@
   </script>
 
   <script>
-    // Inject a "Copy report" button into every bot message after it appears
+    // Inject "Copy Report" button ONLY on messages containing the scan report marker
     const chatContainer = document.getElementById('n8n-chat');
     const observer = new MutationObserver(() => {
       document.querySelectorAll('.chat-message.chat-message-from-bot').forEach(msg => {
-        if (msg.querySelector('.scanada-copy-btn')) return; // already added
+        if (msg.querySelector('.scanada-copy-btn')) return; // already handled
+        if (!msg.innerHTML.includes('SCANADA-REPORT')) return; // not the report
         const btn = document.createElement('button');
         btn.className = 'scanada-copy-btn';
-        btn.textContent = '📋 Copy';
+        btn.textContent = '📋 Copy Report';
         btn.style.cssText = 'margin-top:8px;padding:4px 10px;font-size:0.78rem;cursor:pointer;border:1px solid #003366;background:#fff;color:#003366;border-radius:4px;display:block;';
         btn.addEventListener('click', () => {
-          const text = msg.innerText.replace('📋 Copy', '').trim();
-          navigator.clipboard.writeText(text).then(() => {
+          // Get full text, strip the divider and everything after it
+          const full = msg.innerText;
+          const cutoff = full.indexOf('---');
+          const reportOnly = (cutoff !== -1 ? full.slice(0, cutoff) : full).trim();
+          navigator.clipboard.writeText(reportOnly).then(() => {
             btn.textContent = '✅ Copied!';
-            setTimeout(() => { btn.textContent = '📋 Copy'; }, 2000);
+            setTimeout(() => { btn.textContent = '📋 Copy Report'; }, 2000);
           });
         });
         msg.appendChild(btn);
