@@ -32,13 +32,10 @@
     }
     #n8n-chat {
       height: calc(100vh - 72px);
-      width: 100%;
     }
+    /* Hide the n8n widget's built-in header to avoid duplication */
     .chat-header {
       display: none !important;
-    }
-    .chat-message-markdown p {
-      margin: 0 0 4px 0;
     }
     :root {
       --chat--color-primary: #003366;
@@ -76,10 +73,7 @@
       mode: 'fullscreen',
       showWelcomeScreen: true,
       initialMessages: [
-        "Hi — I'm Scanada, your jurisdictional scan copilot.",
-        "Paste your research question below to get started.\n✅ Required: Research question\n🔲 Optional: Jurisdictions (default: all 14 — provinces, territories + federal)\n🔲 Optional: Time range (default: most recently available)\n🔲 Optional: Keywords, exclusions",
-        "Example:\n\"Scan all PT from 2021-04 to 2026-02: What progress has each province and territory made in creating new regulated childcare spaces, with particular attention to K–12 school settings and CWELCC funding? Keywords: CWELCC, space creation, capital funding. Exclude: home child care, unregulated care.\"",
-        "All scans produce a full structured report from official government sources only."
+        "Hi — I'm Scanada, your jurisdictional scan copilot. Paste your research question below to get started.\n\n✅ Required: Research question\n🔲 Optional: Jurisdictions (default: all 14 — provinces, territories + federal)\n🔲 Optional: Time range (default: most recently available)\n🔲 Optional: Keywords, exclusions\n\nExample: \"Scan all PT from 2021-04 to 2026-02: What progress has each province and territory made in creating new regulated childcare spaces, with particular attention to K–12 school settings and CWELCC funding? Keywords: CWELCC, space creation, capital funding. Exclude: home child care, unregulated care.\"\n\nAll scans produce a full structured report from official government sources only."
       ],
       i18n: {
         en: {
@@ -90,44 +84,29 @@
         }
       }
     });
+  </script>
 
-    function fixLayout() {
-      // Find the textarea — this is the most reliable anchor element
-      const textarea = document.querySelector('#n8n-chat textarea');
-      if (!textarea) return;
-
-      // Fix the textarea itself — grow to fill all available space
-      textarea.style.cssText += '; flex: 1 1 auto !important; width: 100% !important; min-width: 0 !important; box-sizing: border-box !important;';
-
-      // Walk up to find the flex row container (immediate parent of textarea)
-      const inputRow = textarea.parentElement;
-      if (inputRow) {
-        inputRow.style.cssText += '; display: flex !important; flex-direction: row !important; align-items: center !important; width: 100% !important; box-sizing: border-box !important;';
-
-        // Fix every sibling button — shrink to natural size, never grow
-        inputRow.querySelectorAll('button').forEach(btn => {
-          btn.style.cssText += '; flex: 0 0 auto !important; width: auto !important; min-width: unset !important; max-width: unset !important;';
+  <script>
+    // Inject a "Copy report" button into every bot message after it appears
+    const chatContainer = document.getElementById('n8n-chat');
+    const observer = new MutationObserver(() => {
+      document.querySelectorAll('.chat-message.chat-message-from-bot').forEach(msg => {
+        if (msg.querySelector('.scanada-copy-btn')) return; // already added
+        const btn = document.createElement('button');
+        btn.className = 'scanada-copy-btn';
+        btn.textContent = '📋 Copy';
+        btn.style.cssText = 'margin-top:8px;padding:4px 10px;font-size:0.78rem;cursor:pointer;border:1px solid #003366;background:#fff;color:#003366;border-radius:4px;display:block;';
+        btn.addEventListener('click', () => {
+          const text = msg.innerText.replace('📋 Copy', '').trim();
+          navigator.clipboard.writeText(text).then(() => {
+            btn.textContent = '✅ Copied!';
+            setTimeout(() => { btn.textContent = '📋 Copy'; }, 2000);
+          });
         });
-
-        // Also fix any intermediate wrappers between inputRow and the chat root
-        let el = inputRow.parentElement;
-        while (el && el !== document.getElementById('n8n-chat')) {
-          el.style.cssText += '; width: 100% !important; max-width: 100% !important; box-sizing: border-box !important;';
-          el = el.parentElement;
-        }
-      }
-    }
-
-    // Run after widget renders, keep watching for re-renders
-    setTimeout(fixLayout, 300);
-    setTimeout(fixLayout, 800);
-    setTimeout(fixLayout, 2000);
-
-    new MutationObserver(() => {
-      if (document.querySelector('#n8n-chat textarea')) {
-        fixLayout();
-      }
-    }).observe(document.getElementById('n8n-chat'), { childList: true, subtree: true });
+        msg.appendChild(btn);
+      });
+    });
+    observer.observe(chatContainer, { childList: true, subtree: true });
   </script>
 
 </body>
