@@ -5,6 +5,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <meta name="description" content="Scanada — Official-source jurisdictional scan tool for the Government of Alberta" />
   <title>Scanada — Jurisdictional Scan Copilot</title>
+
+  <!-- Favicon: Alberta maple leaf in government navy -->
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='18' fill='%23002855'/><text y='.9em' font-size='72' x='50%' dominant-baseline='top' text-anchor='middle' transform='translate(0,8)'>🍁</text></svg>" />
+
   <link href="https://cdn.jsdelivr.net/npm/@n8n/chat/dist/style.css" rel="stylesheet" />
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -18,11 +22,12 @@
 
     body {
       margin: 0;
-      background: #f0f3f7;
+      background: #ffffff;
       font-family: 'Source Sans 3', 'Segoe UI', Arial, sans-serif;
       -webkit-font-smoothing: antialiased;
     }
 
+    /* ── Header ──────────────────────────────────────────────────── */
     .scanada-header {
       background: #002855;
       box-shadow: 0 2px 12px rgba(0, 0, 0, 0.28);
@@ -44,6 +49,20 @@
       pointer-events: none;
     }
 
+    .scanada-badge {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 36px;
+      height: 36px;
+      background: rgba(201, 168, 76, 0.18);
+      border: 1.5px solid rgba(201, 168, 76, 0.5);
+      border-radius: 6px;
+      font-size: 1.25rem;
+      line-height: 1;
+      flex-shrink: 0;
+    }
+
     .scanada-header-text h1 {
       margin: 0;
       font-family: 'Source Serif 4', Georgia, serif;
@@ -57,24 +76,10 @@
     .scanada-header-text p {
       margin: 3px 0 0;
       font-family: 'Source Sans 3', 'Segoe UI', sans-serif;
-      font-size: 0.8rem;
+      font-size: 0.78rem;
       font-weight: 400;
-      color: rgba(255, 255, 255, 0.72);
+      color: rgba(255, 255, 255, 0.65);
       letter-spacing: 0.2px;
-    }
-
-    .scanada-badge {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      width: 36px;
-      height: 36px;
-      background: rgba(201, 168, 76, 0.18);
-      border: 1.5px solid rgba(201, 168, 76, 0.5);
-      border-radius: 6px;
-      font-size: 1.25rem;
-      line-height: 1;
-      flex-shrink: 0;
     }
 
     .scanada-header-meta {
@@ -97,6 +102,7 @@
       white-space: nowrap;
     }
 
+    /* ── Chat container ──────────────────────────────────────────── */
     #n8n-chat {
       height: calc(100vh - 64px);
     }
@@ -105,6 +111,7 @@
       display: none !important;
     }
 
+    /* ── n8n Chat CSS variables ──────────────────────────────────── */
     :root {
       --chat--color-primary:             #002855;
       --chat--color-primary-shade-50:    #001e42;
@@ -123,6 +130,33 @@
       --chat--header--color:             #ffffff;
       --chat--typing--color:             #002855;
     }
+
+    /* ── Mobile: tighten header at narrow viewports ──────────────── */
+    @media (max-width: 600px) {
+      .scanada-header {
+        padding: 0 16px;
+        gap: 12px;
+      }
+
+      /* Hide the right-side pill — title + subtitle are enough at small size */
+      .scanada-header-meta {
+        display: none;
+      }
+
+      .scanada-header-text h1 {
+        font-size: 1.1rem;
+      }
+
+      .scanada-header-text p {
+        display: none;
+      }
+    }
+
+    @media (max-width: 400px) {
+      .scanada-badge {
+        display: none;
+      }
+    }
   </style>
 </head>
 <body>
@@ -131,7 +165,7 @@
     <div class="scanada-badge">🍁</div>
     <div class="scanada-header-text">
       <h1>Scanada</h1>
-      <p>Official-Source Jurisdictional Scan Copilot</p>
+      <p>Jurisdictional Scan Copilot</p>
     </div>
     <div class="scanada-header-meta">
       <span class="scanada-pill">Government of Alberta</span>
@@ -166,72 +200,75 @@
   </script>
 
   <script>
-    const FOOTER_MARKER = 'Copy the full report using the button below';
-    const chatContainer = document.getElementById('n8n-chat');
+    // Ensure fonts are loaded before any dynamic button text renders in Source Sans 3
+    document.fonts.ready.then(() => {
+      const FOOTER_MARKER = 'Copy the full report using the button below';
+      const chatContainer = document.getElementById('n8n-chat');
 
-    const observer = new MutationObserver(() => {
-      document.querySelectorAll('.chat-message.chat-message-from-bot').forEach(msg => {
-        if (msg.querySelector('.scanada-copy-btn')) return;
-        if (!msg.innerText.includes(FOOTER_MARKER)) return;
+      const observer = new MutationObserver(() => {
+        document.querySelectorAll('.chat-message.chat-message-from-bot').forEach(msg => {
+          if (msg.querySelector('.scanada-copy-btn')) return;
+          if (!msg.innerText.includes(FOOTER_MARKER)) return;
 
-        const btn = document.createElement('button');
-        btn.className = 'scanada-copy-btn';
-        btn.textContent = 'Copy Report';
+          const btn = document.createElement('button');
+          btn.className = 'scanada-copy-btn';
+          btn.textContent = 'Copy Report';
 
-        Object.assign(btn.style, {
-          marginTop:     '10px',
-          padding:       '7px 18px',
-          fontSize:      '0.8rem',
-          fontFamily:    "'Source Sans 3', 'Segoe UI', sans-serif",
-          fontWeight:    '600',
-          letterSpacing: '0.4px',
-          cursor:        'pointer',
-          border:        '1.5px solid #002855',
-          background:    '#ffffff',
-          color:         '#002855',
-          borderRadius:  '5px',
-          display:       'inline-block',
-          transition:    'background 0.15s, color 0.15s',
-          lineHeight:    '1',
-        });
-
-        btn.addEventListener('mouseenter', () => {
-          btn.style.background = '#002855';
-          btn.style.color      = '#ffffff';
-        });
-        btn.addEventListener('mouseleave', () => {
-          btn.style.background = '#ffffff';
-          btn.style.color      = '#002855';
-        });
-
-        btn.addEventListener('click', () => {
-          const full = msg.innerText;
-          const cutIdx = full.indexOf(FOOTER_MARKER);
-          let reportOnly = (cutIdx !== -1 ? full.slice(0, cutIdx) : full).trim();
-          reportOnly = reportOnly.replace(/[\s\-─━]{3,}\s*$/, '').trim();
-
-          navigator.clipboard.writeText(reportOnly).then(() => {
-            btn.textContent      = '✅ Copied!';
-            btn.style.background = '#004d1a';
-            btn.style.color      = '#ffffff';
-            btn.style.border     = '1.5px solid #004d1a';
-            setTimeout(() => {
-              btn.textContent      = 'Copy Report';
-              btn.style.background = '#ffffff';
-              btn.style.color      = '#002855';
-              btn.style.border     = '1.5px solid #002855';
-            }, 2500);
-          }).catch(() => {
-            btn.textContent = '⚠️ Copy failed — select text manually';
-            setTimeout(() => { btn.textContent = 'Copy Report'; }, 3000);
+          Object.assign(btn.style, {
+            marginTop:     '10px',
+            padding:       '7px 18px',
+            fontSize:      '0.8rem',
+            fontFamily:    "'Source Sans 3', 'Segoe UI', sans-serif",
+            fontWeight:    '600',
+            letterSpacing: '0.4px',
+            cursor:        'pointer',
+            border:        '1.5px solid #002855',
+            background:    '#ffffff',
+            color:         '#002855',
+            borderRadius:  '5px',
+            display:       'inline-block',
+            transition:    'background 0.15s, color 0.15s',
+            lineHeight:    '1',
           });
+
+          btn.addEventListener('mouseenter', () => {
+            btn.style.background = '#002855';
+            btn.style.color      = '#ffffff';
+          });
+          btn.addEventListener('mouseleave', () => {
+            btn.style.background = '#ffffff';
+            btn.style.color      = '#002855';
+          });
+
+          btn.addEventListener('click', () => {
+            const full = msg.innerText;
+            const cutIdx = full.indexOf(FOOTER_MARKER);
+            let reportOnly = (cutIdx !== -1 ? full.slice(0, cutIdx) : full).trim();
+            reportOnly = reportOnly.replace(/[\s\-─━]{3,}\s*$/, '').trim();
+
+            navigator.clipboard.writeText(reportOnly).then(() => {
+              btn.textContent      = '✅ Copied!';
+              btn.style.background = '#004d1a';
+              btn.style.color      = '#ffffff';
+              btn.style.border     = '1.5px solid #004d1a';
+              setTimeout(() => {
+                btn.textContent      = 'Copy Report';
+                btn.style.background = '#ffffff';
+                btn.style.color      = '#002855';
+                btn.style.border     = '1.5px solid #002855';
+              }, 2500);
+            }).catch(() => {
+              btn.textContent = '⚠️ Copy failed — select text manually';
+              setTimeout(() => { btn.textContent = 'Copy Report'; }, 3000);
+            });
+          });
+
+          msg.appendChild(btn);
         });
-
-        msg.appendChild(btn);
       });
-    });
 
-    observer.observe(chatContainer, { childList: true, subtree: true });
+      observer.observe(chatContainer, { childList: true, subtree: true });
+    });
   </script>
 
 </body>
