@@ -3,62 +3,138 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="description" content="Scanada — Official-source jurisdictional scan tool for the Government of Alberta" />
   <title>Scanada — Jurisdictional Scan Copilot</title>
   <link href="https://cdn.jsdelivr.net/npm/@n8n/chat/dist/style.css" rel="stylesheet" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;0,8..60,700;1,8..60,400&family=Source+Sans+3:wght@400;500;600&display=swap" rel="stylesheet" />
+
   <style>
+    *, *::before, *::after {
+      box-sizing: border-box;
+    }
+
     body {
       margin: 0;
-      background: #f4f6f9;
-      font-family: 'Segoe UI', Arial, sans-serif;
+      background: #f0f3f7;
+      font-family: 'Source Sans 3', 'Segoe UI', Arial, sans-serif;
+      -webkit-font-smoothing: antialiased;
     }
+
     .scanada-header {
-      background: #003366;
+      background: #002855;
+      box-shadow: 0 2px 12px rgba(0, 0, 0, 0.28);
       color: #ffffff;
-      padding: 16px 32px;
+      padding: 0 32px;
+      height: 64px;
       display: flex;
       align-items: center;
-      gap: 14px;
+      gap: 16px;
+      position: relative;
+      border-bottom: 3px solid #c9a84c;
     }
-    .scanada-header h1 {
+
+    .scanada-header::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, rgba(255,255,255,0.05) 0%, transparent 100%);
+      pointer-events: none;
+    }
+
+    .scanada-header-text h1 {
       margin: 0;
-      font-size: 1.4rem;
+      font-family: 'Source Serif 4', Georgia, serif;
+      font-size: 1.25rem;
       font-weight: 700;
-      letter-spacing: 0.5px;
+      letter-spacing: 0.3px;
+      line-height: 1.2;
+      color: #ffffff;
     }
-    .scanada-header p {
+
+    .scanada-header-text p {
       margin: 3px 0 0;
-      font-size: 0.82rem;
-      opacity: 0.8;
+      font-family: 'Source Sans 3', 'Segoe UI', sans-serif;
+      font-size: 0.8rem;
+      font-weight: 400;
+      color: rgba(255, 255, 255, 0.72);
+      letter-spacing: 0.2px;
     }
+
+    .scanada-badge {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 36px;
+      height: 36px;
+      background: rgba(201, 168, 76, 0.18);
+      border: 1.5px solid rgba(201, 168, 76, 0.5);
+      border-radius: 6px;
+      font-size: 1.25rem;
+      line-height: 1;
+      flex-shrink: 0;
+    }
+
+    .scanada-header-meta {
+      margin-left: auto;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .scanada-pill {
+      font-family: 'Source Sans 3', sans-serif;
+      font-size: 0.72rem;
+      font-weight: 600;
+      color: rgba(255, 255, 255, 0.6);
+      letter-spacing: 0.8px;
+      text-transform: uppercase;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 20px;
+      padding: 3px 10px;
+      white-space: nowrap;
+    }
+
     #n8n-chat {
-      height: calc(100vh - 72px);
+      height: calc(100vh - 64px);
     }
-    /* Hide the n8n widget's built-in header to avoid duplication */
+
     .chat-header {
       display: none !important;
     }
+
     :root {
-      --chat--color-primary: #003366;
-      --chat--color-primary-shade-50: #002244;
-      --chat--color-secondary: #0055a5;
-      --chat--color-background: #ffffff;
-      --chat--color-font: #1a1a2e;
-      --chat--message--bot--background: #eaf1fb;
-      --chat--message--user--background: #003366;
-      --chat--message--user--color: #ffffff;
-      --chat--message--font-size: 0.95rem;
-      --chat--input--background: #f9fafb;
-      --chat--header--background: #003366;
-      --chat--header--color: #ffffff;
+      --chat--color-primary:             #002855;
+      --chat--color-primary-shade-50:    #001e42;
+      --chat--color-secondary:           #0055a5;
+      --chat--color-background:          #ffffff;
+      --chat--color-font:                #1a1e2e;
+      --chat--message--bot--background:  #f5f7fa;
+      --chat--message--bot--color:       #1a1e2e;
+      --chat--message--user--background: #002855;
+      --chat--message--user--color:      #ffffff;
+      --chat--message--font-size:        0.94rem;
+      --chat--message--line-height:      1.65;
+      --chat--input--background:         #f8f9fb;
+      --chat--input--border-color:       #d5dbe8;
+      --chat--header--background:        #002855;
+      --chat--header--color:             #ffffff;
+      --chat--typing--color:             #002855;
     }
   </style>
 </head>
 <body>
 
   <div class="scanada-header">
-    <div>
-      <h1>🍁 Scanada</h1>
-      <p>Official-Source Jurisdictional Scan Copilot — Government of Alberta</p>
+    <div class="scanada-badge">🍁</div>
+    <div class="scanada-header-text">
+      <h1>Scanada</h1>
+      <p>Official-Source Jurisdictional Scan Copilot</p>
+    </div>
+    <div class="scanada-header-meta">
+      <span class="scanada-pill">Government of Alberta</span>
     </div>
   </div>
 
@@ -90,67 +166,60 @@
   </script>
 
   <script>
-    // ── Copy Report button injector ──────────────────────────────────────────
-    // Detects bot messages that contain the report footer, adds a copy button.
-    // No hidden tags needed — detection uses the footer text present in every report.
     const FOOTER_MARKER = 'Copy the full report using the button below';
-
     const chatContainer = document.getElementById('n8n-chat');
 
     const observer = new MutationObserver(() => {
       document.querySelectorAll('.chat-message.chat-message-from-bot').forEach(msg => {
-        // Skip if button already added
         if (msg.querySelector('.scanada-copy-btn')) return;
-        // Only act on messages that contain the report footer
         if (!msg.innerText.includes(FOOTER_MARKER)) return;
 
         const btn = document.createElement('button');
         btn.className = 'scanada-copy-btn';
         btn.textContent = 'Copy Report';
-        btn.style.cssText = [
-          'margin-top: 8px',
-          'padding: 6px 14px',
-          'font-size: 0.82rem',
-          'font-weight: 600',
-          'cursor: pointer',
-          'border: 1.5px solid #003366',
-          'background: #ffffff',
-          'color: #003366',
-          'border-radius: 5px',
-          'display: inline-block',
-          'transition: background 0.15s, color 0.15s',
-        ].join(';');
+
+        Object.assign(btn.style, {
+          marginTop:     '10px',
+          padding:       '7px 18px',
+          fontSize:      '0.8rem',
+          fontFamily:    "'Source Sans 3', 'Segoe UI', sans-serif",
+          fontWeight:    '600',
+          letterSpacing: '0.4px',
+          cursor:        'pointer',
+          border:        '1.5px solid #002855',
+          background:    '#ffffff',
+          color:         '#002855',
+          borderRadius:  '5px',
+          display:       'inline-block',
+          transition:    'background 0.15s, color 0.15s',
+          lineHeight:    '1',
+        });
 
         btn.addEventListener('mouseenter', () => {
-          btn.style.background = '#003366';
-          btn.style.color = '#ffffff';
+          btn.style.background = '#002855';
+          btn.style.color      = '#ffffff';
         });
         btn.addEventListener('mouseleave', () => {
           btn.style.background = '#ffffff';
-          btn.style.color = '#003366';
+          btn.style.color      = '#002855';
         });
 
         btn.addEventListener('click', () => {
           const full = msg.innerText;
-
-          // Strip from the footer marker onward (the divider + footer label + button text)
           const cutIdx = full.indexOf(FOOTER_MARKER);
           let reportOnly = (cutIdx !== -1 ? full.slice(0, cutIdx) : full).trim();
-
-          // Also strip any trailing HR separator ("---" or "—" variants)
-          // The Markdown `---` renders as <hr>; innerText may leave a blank line or dashes
           reportOnly = reportOnly.replace(/[\s\-─━]{3,}\s*$/, '').trim();
 
           navigator.clipboard.writeText(reportOnly).then(() => {
-            btn.textContent = '✅ Copied!';
-            btn.style.background = '#006600';
-            btn.style.color = '#ffffff';
-            btn.style.borderColor = '#006600';
+            btn.textContent      = '✅ Copied!';
+            btn.style.background = '#004d1a';
+            btn.style.color      = '#ffffff';
+            btn.style.border     = '1.5px solid #004d1a';
             setTimeout(() => {
-              btn.textContent = 'Copy Report';
+              btn.textContent      = 'Copy Report';
               btn.style.background = '#ffffff';
-              btn.style.color = '#003366';
-              btn.style.borderColor = '#003366';
+              btn.style.color      = '#002855';
+              btn.style.border     = '1.5px solid #002855';
             }, 2500);
           }).catch(() => {
             btn.textContent = '⚠️ Copy failed — select text manually';
