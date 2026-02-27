@@ -131,24 +131,6 @@
       --chat--typing--color:             #002855;
     }
 
-    /* ── Tighten paragraph spacing inside chat bubbles ───────────── */
-    .chat-message-from-bot p,
-    .chat-message-from-user p {
-      margin-top: 0.25em;
-      margin-bottom: 0.25em;
-    }
-
-    /* First and last p in a bubble get no extra outer gap */
-    .chat-message-from-bot p:first-child,
-    .chat-message-from-user p:first-child {
-      margin-top: 0;
-    }
-
-    .chat-message-from-bot p:last-child,
-    .chat-message-from-user p:last-child {
-      margin-bottom: 0;
-    }
-
     /* ── Mobile: tighten header at narrow viewports ──────────────── */
     @media (max-width: 600px) {
       .scanada-header {
@@ -156,6 +138,7 @@
         gap: 12px;
       }
 
+      /* Hide the right-side pill — title + subtitle are enough at small size */
       .scanada-header-meta {
         display: none;
       }
@@ -218,6 +201,24 @@
 
   <script>
     document.fonts.ready.then(() => {
+
+      // ── Inject paragraph spacing override AFTER n8n styles load ──
+      const overrideStyle = document.createElement('style');
+      overrideStyle.textContent = `
+        #n8n-chat .chat-message p {
+          margin-top: 0.25em !important;
+          margin-bottom: 0.25em !important;
+        }
+        #n8n-chat .chat-message p:first-child {
+          margin-top: 0 !important;
+        }
+        #n8n-chat .chat-message p:last-child {
+          margin-bottom: 0 !important;
+        }
+      `;
+      document.head.appendChild(overrideStyle);
+
+      // ── Copy button logic ─────────────────────────────────────────
       const FOOTER_MARKER = '📋 Copy the full report using the button below.';
       const chatContainer = document.getElementById('n8n-chat');
 
@@ -226,7 +227,7 @@
           if (msg.querySelector('.scanada-copy-btn')) return;
           if (!msg.innerText.includes(FOOTER_MARKER)) return;
 
-          // ── Find the exact DOM node containing the marker text ──
+          // Find the exact DOM node containing the marker text
           // and insert the button immediately after it, before the audit log
           let markerNode = null;
           const walker = document.createTreeWalker(msg, NodeFilter.SHOW_TEXT);
