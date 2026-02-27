@@ -131,6 +131,24 @@
       --chat--typing--color:             #002855;
     }
 
+    /* ── Tighten paragraph spacing inside chat bubbles ───────────── */
+    .chat-message-from-bot p,
+    .chat-message-from-user p {
+      margin-top: 0.25em;
+      margin-bottom: 0.25em;
+    }
+
+    /* First and last p in a bubble get no extra outer gap */
+    .chat-message-from-bot p:first-child,
+    .chat-message-from-user p:first-child {
+      margin-top: 0;
+    }
+
+    .chat-message-from-bot p:last-child,
+    .chat-message-from-user p:last-child {
+      margin-bottom: 0;
+    }
+
     /* ── Mobile: tighten header at narrow viewports ──────────────── */
     @media (max-width: 600px) {
       .scanada-header {
@@ -138,7 +156,6 @@
         gap: 12px;
       }
 
-      /* Hide the right-side pill — title + subtitle are enough at small size */
       .scanada-header-meta {
         display: none;
       }
@@ -200,9 +217,8 @@
   </script>
 
   <script>
-    // Ensure fonts are loaded before any dynamic button text renders in Source Sans 3
     document.fonts.ready.then(() => {
-      const FOOTER_MARKER = '📋 Copy the full report using the button below';
+      const FOOTER_MARKER = '📋 Copy the full report using the button below.';
       const chatContainer = document.getElementById('n8n-chat');
 
       const observer = new MutationObserver(() => {
@@ -210,12 +226,24 @@
           if (msg.querySelector('.scanada-copy-btn')) return;
           if (!msg.innerText.includes(FOOTER_MARKER)) return;
 
+          // ── Find the exact DOM node containing the marker text ──
+          // and insert the button immediately after it, before the audit log
+          let markerNode = null;
+          const walker = document.createTreeWalker(msg, NodeFilter.SHOW_TEXT);
+          while (walker.nextNode()) {
+            if (walker.currentNode.nodeValue.includes('📋 Copy the full report')) {
+              markerNode = walker.currentNode.parentElement;
+              break;
+            }
+          }
+
           const btn = document.createElement('button');
           btn.className = 'scanada-copy-btn';
           btn.textContent = 'Copy Report';
 
           Object.assign(btn.style, {
             marginTop:     '10px',
+            marginBottom:  '10px',
             padding:       '7px 18px',
             fontSize:      '0.8rem',
             fontFamily:    "'Source Sans 3', 'Segoe UI', sans-serif",
@@ -226,7 +254,7 @@
             background:    '#ffffff',
             color:         '#002855',
             borderRadius:  '5px',
-            display:       'inline-block',
+            display:       'block',
             transition:    'background 0.15s, color 0.15s',
             lineHeight:    '1',
           });
@@ -241,8 +269,8 @@
           });
 
           btn.addEventListener('click', () => {
-            const full = msg.innerText;
-            const cutIdx = full.indexOf(FOOTER_MARKER);
+            const full   = msg.innerText;
+            const cutIdx = full.indexOf('📋 Copy the full report');
             let reportOnly = (cutIdx !== -1 ? full.slice(0, cutIdx) : full).trim();
             reportOnly = reportOnly.replace(/[\s\-─━]{3,}\s*$/, '').trim();
 
@@ -263,7 +291,12 @@
             });
           });
 
-          msg.appendChild(btn);
+          // Insert button right after the marker line, before audit log
+          if (markerNode && markerNode.parentElement) {
+            markerNode.parentElement.insertBefore(btn, markerNode.nextSibling);
+          } else {
+            msg.appendChild(btn);
+          }
         });
       });
 
@@ -273,4 +306,3 @@
 
 </body>
 </html>
-
